@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Text;
 
 using SqlBuilder.Core.Exceptions;
+using SqlBuilder.Core.Helpers;
+
 // ReSharper disable StyleCop.SA1126
 
 namespace SqlBuilder.Core.Statements
@@ -29,7 +31,7 @@ namespace SqlBuilder.Core.Statements
 
         public InsertSqlOptions Options { get; set; } = new InsertSqlOptions();
 
-        public override string GenerateQuery()
+        public override void ValidateQuery()
         {
             if (string.IsNullOrEmpty(this.TableName))
             {
@@ -38,10 +40,6 @@ namespace SqlBuilder.Core.Statements
             if (this.Columns.Count < 1)
             {
                 throw new InvalidSqlStatementException("Missing columns");
-            }
-            if (this.Columns.Any(name => name.Contains(" ")))
-            {
-                throw new InvalidSqlStatementException($"Invalid column name: {this.Columns.First(name => name.Contains(" "))}");
             }
             if (this.Rows.Count < 1)
             {
@@ -64,6 +62,11 @@ namespace SqlBuilder.Core.Statements
                     }
                 }
             }
+        }
+
+        public override string GenerateQuery()
+        {
+            this.ValidateQuery();
 
             var builder = new StringBuilder();
             builder.AppendLine($"INSERT INTO {this.TableName} ({string.Join(", ", this.Columns)})");
@@ -85,54 +88,7 @@ namespace SqlBuilder.Core.Statements
                 return value?.ToString();
             }
 
-            if (value == null)
-            {
-                return "NULL";
-            }
-
-            switch (value)
-            {
-                case string s:
-                    return $"'{s.Replace("'", "''")}'";
-                case Enum e:
-                    if (this.Options?.InsertEnumsAsString == true)
-                    {
-                        return $"'{e.ToString("G")}'";
-                    }
-                    return Convert.ToInt32(value).ToString();
-                case byte _:
-                case sbyte _:
-                case short _:
-                case ushort _:
-                case int _:
-                case uint _:
-                case long _:
-                case ulong _:
-                case float _:
-                case double _:
-                case decimal _:
-                    if (this.Options?.InsertNumberZeroAsNull == true)
-                    {
-                        return "NULL";
-                    }
-
-                    return value.ToString();
-                case bool b:
-                    if (this.Options?.InsertBoolAsNumbers == true)
-                    {
-                        return b ? "1" : "0";
-                    }
-
-                    return b ? "'True'" : "'False'";
-                default:
-                    if (this.Options?.AllowClassTypes != true && value.GetType().GetTypeInfo().IsClass)
-                    {
-                        throw new InvalidSqlStatementException($"Options does not permit class types. Culprit: {value.GetType().FullName}");
-                    }
-                    break;
-            }
-
-            return $"'{value}'";
+            return SqlValueParser.ParseValue(value, this.Options);
         }
 
         public static InsertSqlStatement Generate<T>(string tableName, IEnumerable<T> items)

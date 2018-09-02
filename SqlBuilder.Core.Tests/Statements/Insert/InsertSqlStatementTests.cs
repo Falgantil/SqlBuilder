@@ -40,8 +40,8 @@ namespace SqlBuilder.Core.Tests.Statements.Insert
             // Assert
             var expected = $@"
 INSERT INTO MagicTable ({Column1}, {Column2}, {Column3})
-VALUES ('Data 1', 24, 'True'),
-('Cool 2', 42, 'False');
+VALUES ('Data 1', 24, 1),
+('Cool 2', 42, 0);
 ";
             foreach (var c in Environment.NewLine) expected = expected.Trim(c);
             foreach (var c in Environment.NewLine) expected = expected.Trim(c);
@@ -100,8 +100,8 @@ VALUES ('Data 1', 24, 'True'),
             // Assert
             var expected = $@"
 INSERT INTO People (FirstName, LastName, Age, Gender, IsDead)
-VALUES ('Johnny', 'Appleseed', 24, 1, 'False'),
-('Alberta', 'Pearseed', 103, 2, 'True');
+VALUES ('Johnny', 'Appleseed', 24, 1, 0),
+('Alberta', 'Pearseed', 103, 2, 1);
 ";
             foreach (var c in Environment.NewLine)
                 expected = expected.Trim(c);

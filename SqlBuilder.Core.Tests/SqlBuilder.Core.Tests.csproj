@@ -68,6 +68,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statements\Insert\InsertSqlStatementTests.cs" />
+    <Compile Include="Statements\Update\UpdateSqlStatementTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -2,18 +2,12 @@
 
 using System.Collections.Generic;
 
+using SqlBuilder.Core.Helpers;
+
 namespace SqlBuilder.Core.Statements
 {
-    public class InsertSqlOptions
+    public class InsertSqlOptions : SqlValueOptions
     {
-        public bool InsertEnumsAsString { get; set; }
-
-        public bool InsertNumberZeroAsNull { get; set; }
-
-        public bool InsertBoolAsNumbers { get; set; }
-
-        public bool AllowClassTypes { get; set; }
-
         public List<int> SkipFormatRows { get; set; } = new List<int>();
     }
 }
