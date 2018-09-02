@@ -60,13 +60,6 @@ VALUES ('Data 1', 24, 1),
             public PersonGender Gender { get; set; }
 
             public bool IsDead { get; set; }
-
-            public enum PersonGender
-            {
-                Undefined = 0,
-                Male = 1,
-                Female = 2
-            }
         }
 
         [Fact]
@@ -80,7 +73,7 @@ VALUES ('Data 1', 24, 1),
                     FirstName = "Johnny",
                     LastName = "Appleseed",
                     Age = 24,
-                    Gender = PersonModel.PersonGender.Male,
+                    Gender = PersonGender.Male,
                     IsDead = false
                 }, 
                 new PersonModel
@@ -88,7 +81,7 @@ VALUES ('Data 1', 24, 1),
                     FirstName = "Alberta",
                     LastName = "Pearseed",
                     Age = 103,
-                    Gender = PersonModel.PersonGender.Female,
+                    Gender = PersonGender.Female,
                     IsDead = true
                 }
             };
