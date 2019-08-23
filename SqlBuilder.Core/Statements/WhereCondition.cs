@@ -103,6 +103,12 @@ namespace SqlBuilder.Core.Statements
                 case ComparisonType.InArray:
                     comparison = "IN";
                     break;
+                case ComparisonType.Is:
+                    comparison = "IS";
+                    break;
+                case ComparisonType.IsNot:
+                    comparison = "IS NOT";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -146,7 +152,9 @@ namespace SqlBuilder.Core.Statements
             LesserThan,
             EqualToOrGreaterThan,
             EqualToOrLesserThan,
-            InArray
+            InArray,
+            Is,
+            IsNot
         }
     }
 
