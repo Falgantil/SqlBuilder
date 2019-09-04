@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.0</TargetFramework>
+    <PackageId>SqlBuilder.Net</PackageId>
+    <Authors>Bjarke</Authors>
+    <Company>InLogic A/S</Company>
+    <Product>SqlBuilder</Product>
+    <Copyright>InLogic A/S 2019</Copyright>
+    <PackageTags>sqlbuilder sql builder string stringbuilder net</PackageTags>
   </PropertyGroup>
 
 </Project>
