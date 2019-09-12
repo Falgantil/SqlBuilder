@@ -36,7 +36,8 @@ namespace SqlBuilder.Core.Tests.Statements.Update
             statement.SetValues.Add(new KeyValuePair<string, object>("IsDead", true));
 
             // Act & Assert
-            Should.Throw<InvalidSqlStatementException>(() => statement.GenerateQuery());
+            var ex = Should.Throw<InvalidSqlStatementException>(() => statement.GenerateQuery());
+            ex.Message.ShouldBe("Missing WHERE statement");
         }
 
         [Fact]
@@ -66,6 +67,20 @@ WHERE (Age >= 100) AND (IsDead = 1);
                 expected = expected.Trim(c);
 
             query.ShouldBe(expected);
+        }
+
+        [Fact]
+        public void VerifyCantGenerateWithEmptySetValueKeys()
+        {
+            // Arrange
+            var statement = new UpdateSqlStatement("People")
+                {Where = new WhereCondition()
+                    .AddSegment(new WhereCondition.Condition("Username", WhereCondition.ComparisonType.Equal, "AdminBoy"))};
+            statement.SetValues.Add(new KeyValuePair<string, object>());
+
+            // Act & Assert
+            var ex = Should.Throw<InvalidSqlStatementException>(() => statement.GenerateQuery());
+            ex.Message.ShouldBe("Empty SET key");
         }
     }
 }

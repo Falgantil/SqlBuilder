@@ -35,6 +35,11 @@ namespace SqlBuilder.Core.Statements.Update
             {
                 throw new InvalidSqlStatementException("Missing SET values");
             }
+
+            if (this.SetValues.Any(pair => string.IsNullOrEmpty(pair.Key)))
+            {
+                throw new InvalidSqlStatementException("Empty SET key");
+            }
             if (this.Options?.AllowMissingWhere != true && this.Where == null)
             {
                 throw new InvalidSqlStatementException("Missing WHERE statement");

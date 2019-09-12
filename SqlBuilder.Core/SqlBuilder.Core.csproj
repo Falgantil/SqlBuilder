@@ -8,6 +8,7 @@
     <Product>SqlBuilder</Product>
     <Copyright>InLogic A/S 2019</Copyright>
     <PackageTags>sqlbuilder sql builder string stringbuilder net</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>

@@ -51,12 +51,12 @@ namespace SqlBuilder.Core.Statements
                 throw new InvalidSqlStatementException($"A row had {differentCount} columns, compared to the Column count of {this.Columns.Count}");
             }
 
-            var types = this.Rows[0].Select(rowData => rowData.GetType()).ToArray();
+            var types = this.Rows[0].Select(rowData => rowData?.GetType()).ToArray();
             foreach (var row in this.Rows)
             {
                 for (var i = 0; i < row.Count; i++)
                 {
-                    if (types[i] != row[i].GetType())
+                    if (types[i] != row[i]?.GetType())
                     {
                         throw new InvalidSqlStatementException("Inconsistent row data. Mixed types in columns!");
                     }
