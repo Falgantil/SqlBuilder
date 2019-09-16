@@ -71,6 +71,7 @@
     <Compile Include="Statements\Delete\DeleteSqlStatementTests.cs" />
     <Compile Include="Statements\Insert\InsertSqlStatementTests.cs" />
     <Compile Include="Statements\Update\UpdateSqlStatementTests.cs" />
+    <Compile Include="Statements\WhereConditionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
