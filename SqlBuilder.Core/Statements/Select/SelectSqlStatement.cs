@@ -20,7 +20,9 @@ namespace SqlBuilder.Core.Statements.Select
 
         public string TableName { get; set; }
 
-        public List<string> Columns { get; set; }
+        public List<JoinCondition> Joins { get; set; } = new List<JoinCondition>();
+
+        public List<string> Columns { get; set; } = new List<string>();
 
         public WhereCondition Where { get; set; }
 
@@ -34,7 +36,7 @@ namespace SqlBuilder.Core.Statements.Select
             {
                 throw new InvalidSqlStatementException("Missing table name");
             }
-            if (this.Columns.Count < 1)
+            if (this.Columns == null || this.Columns.Count < 1)
             {
                 throw new InvalidSqlStatementException("Missing columns");
             }
@@ -49,8 +51,17 @@ namespace SqlBuilder.Core.Statements.Select
             this.ValidateQuery();
 
             var builder = new StringBuilder();
-            builder.AppendLine($"SELECT {string.Join(", ", this.Columns)}");
+            builder.Append("SELECT ");
+            if (this.Options?.Distinct == true)
+            {
+                builder.Append("DISTINCT ");
+            }
+            builder.AppendLine($"{string.Join(", ", this.Columns)}");
             builder.Append($"FROM {this.TableName}");
+            foreach (var join in Joins)
+            {
+                builder.AppendLine(join.GenerateQuery());
+            }
             if (this.Where != null)
             {
                 builder.AppendLine();

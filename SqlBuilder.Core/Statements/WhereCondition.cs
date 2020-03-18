@@ -27,9 +27,34 @@ namespace SqlBuilder.Core.Statements
             this.ValidateQuery();
 
             var builder = new StringBuilder();
-            builder.Append($"WHERE");
-            foreach (var segment in this.Segments)
+            builder.Append("WHERE");
+            var selected = this.segments;
+
+            if (!selected.Any())
             {
+                throw new InvalidSqlStatementException("Invalid WHERE statement, missing at least 1 segment");
+            }
+
+            if (this.Options?.StripTrailingOperators == true)
+            {
+                while (selected.Last() is Operator)
+                {
+                    selected = selected.Take(selected.Count - 1).ToList();
+                }
+            }
+            else if (selected.Last() is Operator lastOp)
+            {
+                throw new InvalidSqlStatementException($"Trailing Operator: {lastOp:G}");
+            }
+
+            if (!selected.Any())
+            {
+                throw new InvalidSqlStatementException("Invalid WHERE statement, missing at least 1 segment");
+            }
+
+            for (var i = 0; i < selected.Count; i++)
+            {
+                var segment = selected[i];
                 if (segment is Condition condition)
                 {
                     builder.Append(this.GenerateConditionSql(condition));
@@ -41,6 +66,7 @@ namespace SqlBuilder.Core.Statements
                     builder.Append(this.GenerateOperatorSql(op));
                     continue;
                 }
+
                 throw new InvalidSqlStatementException($"Invalid segment: {segment}");
             }
 
@@ -103,6 +129,12 @@ namespace SqlBuilder.Core.Statements
                 case ComparisonType.InArray:
                     comparison = "IN";
                     break;
+                case ComparisonType.Is:
+                    comparison = "IS";
+                    break;
+                case ComparisonType.IsNot:
+                    comparison = "IS NOT";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -148,12 +180,15 @@ namespace SqlBuilder.Core.Statements
             LesserThan,
             EqualToOrGreaterThan,
             EqualToOrLesserThan,
-            InArray
+            InArray,
+            Is,
+            IsNot
         }
     }
 
     public class WhereSqlOptions : SqlValueOptions
     {
+        public bool StripTrailingOperators { get; set; }
     }
 
     public class OrderByCondition : SqlStatement
@@ -174,7 +209,7 @@ namespace SqlBuilder.Core.Statements
 
             var items = this.Columns.Select(c => $"{c.ColumnName} {(!c.ByDescending ? "ASC" : "DESC")}");
             builder.Append($"ORDER BY {string.Join(", ", items)}");
-            
+
             return builder.ToString();
         }
 

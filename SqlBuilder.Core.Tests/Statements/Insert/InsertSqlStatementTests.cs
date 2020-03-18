@@ -75,7 +75,7 @@ VALUES ('Data 1', 24, 1),
                     Age = 24,
                     Gender = PersonGender.Male,
                     IsDead = false
-                }, 
+                },
                 new PersonModel
                 {
                     FirstName = "Alberta",
@@ -85,7 +85,7 @@ VALUES ('Data 1', 24, 1),
                     IsDead = true
                 }
             };
-            
+
             // Act
             var statement = InsertSqlStatement.Generate("People", people);
             var query = statement.GenerateQuery();
@@ -102,6 +102,22 @@ VALUES ('Johnny', 'Appleseed', 24, 1, 0),
                 expected = expected.Trim(c);
 
             query.ShouldBe(expected);
+        }
+
+        [Fact]
+        public void VerifyInsertWithNullValues()
+        {
+            // Arrange
+            var statement = new InsertSqlStatement("My_magic_table");
+            statement.Columns.AddRange(new[] { "Column A", "Column B", "Column C" });
+            statement.Rows.Add(new List<object>{ "Value A", 123, null });
+
+            // Act
+            string generatedQuery = null;
+            Should.NotThrow(() => generatedQuery = statement.GenerateQuery());
+
+            // Assert
+            string.IsNullOrEmpty(generatedQuery).ShouldBeFalse();
         }
     }
 }

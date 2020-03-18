@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 
 using SqlBuilder.Core.Exceptions;
+using SqlBuilder.Core.Statements;
 
 namespace SqlBuilder.Core.Helpers
 {
@@ -49,13 +50,13 @@ namespace SqlBuilder.Core.Helpers
                     }
 
                     return value.ToString();
-                case Array coll:
-                    var items = new List<object>();
+                case IEnumerable coll:
+                    var enumItems = new List<string>();
                     foreach (var item in coll)
                     {
-                        items.Add(ParseValue(item, options));
+                        enumItems.Add(ParseValue(item, options));
                     }
-                    return $"({string.Join(", ", coll)})";
+                    return $"({string.Join(", ", enumItems)})";
                 case bool b:
                     if (options?.InsertBoolAsText == true)
                     {
