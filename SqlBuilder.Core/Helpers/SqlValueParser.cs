@@ -13,6 +13,10 @@ namespace SqlBuilder.Core.Helpers
     {
         public static string ParseValue(object value, SqlValueOptions options)
         {
+            if (options?.SkipParsing == true)
+            {
+                return value.ToString();
+            }
             if (value == null)
             {
                 return "NULL";
@@ -80,5 +84,7 @@ namespace SqlBuilder.Core.Helpers
         public bool InsertBoolAsText { get; set; }
 
         public bool AllowClassTypes { get; set; }
+
+        public bool SkipParsing { get; set; }
     }
 }

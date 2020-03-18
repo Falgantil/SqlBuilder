@@ -107,7 +107,7 @@ namespace SqlBuilder.Core.Statements
                     throw new ArgumentOutOfRangeException();
             }
 
-            return $" ({condition.Key} {comparison} {SqlValueParser.ParseValue(condition.Value, this.Options)})";
+            return $" ({condition.Key} {comparison} {SqlValueParser.ParseValue(condition.Value, condition.Options ?? this.Options)})";
         }
 
         public WhereSqlOptions Options { get; set; }
@@ -126,6 +126,8 @@ namespace SqlBuilder.Core.Statements
             public object Value { get; set; }
 
             public ComparisonType Comparison { get; set; }
+
+            public SqlValueOptions Options { get; set; }
         }
 
         public enum Operator
